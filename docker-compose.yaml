@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  cron-job-public-ip:
+    image: fxanhkhoa/cron-job-public-ip:latest
+    restart: always
+    env_file: .env
