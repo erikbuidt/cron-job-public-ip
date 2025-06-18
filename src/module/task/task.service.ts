@@ -29,11 +29,7 @@ export class TaskService {
       .get<string>('cloudflare.zoneNames')
       .replaceAll(' ', '')
       .split(',');
-    console.log(listZones);
-    const listDomains = this.config
-      .get<string>('cloudflare.domains')
-      .replaceAll(' ', '')
-      .split(',');
+
     const ip = await firstValueFrom(this.getPublicIP());
     let cloudflareZones: CloudflareZone;
     this.http
@@ -48,7 +44,6 @@ export class TaskService {
           return forkJoin(
             listZones.map((z) => {
               const zoneID = zones.data.result.find((e) => e.name === z).id;
-              console.log(zoneID);
               return this.http.get<CloudflareDomain>(
                 `https://api.cloudflare.com/client/v4/zones/${zoneID}/dns_records`,
                 { headers: { Authorization: `Bearer ${token}` } },
@@ -60,11 +55,10 @@ export class TaskService {
           const listObservable: Observable<
             AxiosResponse<PatchDNSResponse, any>
           >[] = [];
-          listDomains.forEach((name) => {
+          listZones.forEach((name) => {
             let foundDomain: SingleCloudflareDomain;
             domainsResponse.forEach((e) => {
               if (e.data.result.find((f) => f.name === name)) {
-                // console.log(e.data.result);
                 foundDomain = e.data.result.find((f) => f.name === name);
               }
             });
