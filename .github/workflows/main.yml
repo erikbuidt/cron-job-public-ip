@@ -42,6 +42,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile.production
+          file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: erikbuidt/cron-job-public-ip:latest
